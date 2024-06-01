@@ -11,7 +11,7 @@
         <p v-if="searchError">Sorry, something went wrong, please try again.</p>
         <p v-if="!searchError && mapboxSearchResult.length == 0">No results match your query, try a different rerm.</p>
         <tempalte v-else>
-          <li v-for="searchResult in mapboxSearchResult" :key="searchResult.id" class="py-2 cursor-pointer">{{ searchResult.properties.full_address }}</li>
+          <li v-for="searchResult in mapboxSearchResult" @click="previewCity(searchResult)" :key="searchResult.id" class="py-2 cursor-pointer">{{ searchResult.properties.full_address }}</li>
         </tempalte>
       </ul>
     </div>
@@ -21,12 +21,28 @@
 <script setup>
   import { ref } from 'vue';
   import axios from 'axios';
+  import { useRouter } from "vue-router";
 
+  const router = useRouter();
   const mapboxApiKey = 'pk.eyJ1IjoiZHVvbmcwNCIsImEiOiJjbHd1dWt1dXcwZDN1MmxwejBsd3pkazFzIn0.HFSprFNUNse0Dyxv1DFmjw';
   const searchQuery = ref('');
   const queryTimeout = ref(null);
   const mapboxSearchResult = ref(null);
   const searchError = ref(null);
+
+  const previewCity = (searchResult) => {
+    console.log(searchResult);
+    const [city, state] = searchResult.properties.full_address.split(", ");
+    router.push({
+      name: 'cityView',
+      params: {state: state.replaceAll(" ", ""), city: city },
+      query: {
+        lat: searchResult.geometry.coordinates[1],
+        lat: searchResult.geometry.coordinates[0],
+        preview: true
+      }
+    });
+  }
 
   const getSearchResults = () => {
     clearTimeout(queryTimeout.value);
@@ -35,7 +51,6 @@
         try {
           const result = await axios.get(`https://api.mapbox.com/search/geocode/v6/forward?q=${searchQuery.value}&access_token=${mapboxApiKey}&types=place`)
           mapboxSearchResult.value = result.data.features;
-          console.log(mapboxSearchResult.value);
         } catch {
           searchError.value = true;
         }
