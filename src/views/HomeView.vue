@@ -38,7 +38,7 @@
       params: {state: state.replaceAll(" ", ""), city: city },
       query: {
         lat: searchResult.geometry.coordinates[1],
-        lat: searchResult.geometry.coordinates[0],
+        lng: searchResult.geometry.coordinates[0],
         preview: true
       }
     });
