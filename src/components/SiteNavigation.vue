@@ -66,7 +66,7 @@
         }
 
         const locationObj = {
-            id: uid,
+            id: uid(),
             state: route.params.state,
             city: route.params.city,
             coodrs: {
@@ -81,6 +81,7 @@
 
         let query = Object.assign({}, route.query);
         delete query.preview;
+        query.id = locationObj.id;
         router.replace({ query });
     };
 

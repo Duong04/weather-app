@@ -15,6 +15,14 @@
         </tempalte>
       </ul>
     </div>
+    <div class="flex flex-col gap-4">
+      <Suspense>
+        <CityList />
+        <template #fallback>
+          <CityCardSkeleton/>
+        </template>
+      </Suspense>
+    </div>
   </mai>
 </template>
 
@@ -22,6 +30,8 @@
   import { ref } from 'vue';
   import axios from 'axios';
   import { useRouter } from "vue-router";
+  import CityList from '../components/CityList.vue';
+  import CityCardSkeleton from '../components/CityCardSkeleton.vue';
 
   const router = useRouter();
   const mapboxApiKey = 'pk.eyJ1IjoiZHVvbmcwNCIsImEiOiJjbHd1dWt1dXcwZDN1MmxwejBsd3pkazFzIn0.HFSprFNUNse0Dyxv1DFmjw';
@@ -58,5 +68,5 @@
       }
       mapboxSearchResult.value = null;
     }, 300);
-  }
+  };
 </script>
